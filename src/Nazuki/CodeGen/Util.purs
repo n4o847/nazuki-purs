@@ -22,14 +22,13 @@ module Nazuki.CodeGen.Util
   ) where
 
 import Prelude hiding (add, sub)
-import Control.Monad.State (State)
 import Data.Array ((!!))
 import Data.Char (toCharCode)
+import Data.List.Lazy (replicateM)
 import Data.Maybe as Maybe
 import Data.String.CodeUnits (toCharArray)
 import Data.Traversable (for_, traverse_)
-import Data.Unfoldable (replicateA)
-import Nazuki.CodeGen.Core (Gen, Oper, bfBwd, bfCls, bfDec, bfFwd, bfGet, bfInc, bfNop, bfOpn, bfPut)
+import Nazuki.CodeGen.Core (Oper, bfBwd, bfCls, bfDec, bfFwd, bfGet, bfInc, bfNop, bfOpn, bfPut)
 
 newtype Ptr
   = Ptr Int
@@ -58,9 +57,9 @@ raw s = traverse_ fromChar $ toCharArray s
 forward :: Int -> Oper
 forward a =
   if a >= 0 then
-    void $ (replicateA a bfFwd :: State Gen (Array Unit))
+    void $ replicateM a bfFwd
   else
-    void $ (replicateA (negate a) bfFwd :: State Gen (Array Unit))
+    void $ replicateM (negate a) bfFwd
 
 enter :: Ptr -> Oper
 enter (Ptr a) = forward a
@@ -81,9 +80,9 @@ add :: Ptr -> Int -> Oper
 add p x =
   at p do
     if x >= 0 then
-      void $ (replicateA x bfInc :: State Gen (Array Unit))
+      void $ replicateM x bfInc
     else
-      void $ (replicateA (negate x) bfDec :: State Gen (Array Unit))
+      void $ replicateM (negate x) bfDec
 
 sub :: Ptr -> Int -> Oper
 sub p x = add p (negate x)
