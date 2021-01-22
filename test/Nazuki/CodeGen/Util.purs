@@ -14,7 +14,7 @@ testUtil = do
 
 testAdd :: Effect Unit
 testAdd = do
-  log "Test add"
+  log "- Test add"
   assertEqual
     { actual:
         Core.generate do

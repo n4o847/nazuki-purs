@@ -3,19 +3,24 @@ module Test.Nazuki.CodeGen.Core where
 import Prelude
 import Effect (Effect)
 import Effect.Console (log)
-import Nazuki.CodeGen.Core as CodeGen
+import Nazuki.CodeGen.Core as Core
 import Test.Assert (assertEqual)
+
+testCore :: Effect Unit
+testCore = do
+  log "Nazuki.CodeGen.Core"
+  testGenerate
 
 testGenerate :: Effect Unit
 testGenerate = do
-  log "Test generate"
+  log "- Test generate"
   assertEqual
     { actual:
-        CodeGen.generate do
-          CodeGen.bfInc
-          CodeGen.bfOpn
-          CodeGen.bfFwd
-          CodeGen.bfInc
-          CodeGen.bfCls
+        Core.generate do
+          Core.bfInc
+          Core.bfOpn
+          Core.bfFwd
+          Core.bfInc
+          Core.bfCls
     , expected: "+[>+]"
     }
